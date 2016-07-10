@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "list.h"
 
 #define USB4ALL_VENDOR        0x04d8
 #define USB4ALL_PRODUCT       0x000c
@@ -22,6 +23,6 @@ int dev_open(libusb_device_handle *devh);
 int dev_read(libusb_device_handle *devh, unsigned char* data, size_t size);
 int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size);
 
-//TODO: Find butias connected function
+list* cu_find(void);
 
 #endif

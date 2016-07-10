@@ -17,12 +17,13 @@ void dev_print(libusb_device_handle *devh) {
 int dev_open(libusb_device_handle *devh) {
 
 	int active = libusb_kernel_driver_active(devh, USB4ALL_INTERFACE);
-	if(active == 1)
+	if(active == 1) {
 		libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE);
+		active = 0;
+	}
 
 	libusb_set_configuration(devh, USB4ALL_CONFIGURATION);
-
-	return 0;
+	return active;
 
 }
 
@@ -38,4 +39,24 @@ int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size) {
 	int transferred = 0;
 	return libusb_bulk_transfer(devh, ADMIN_MODULE_IN_ENDPOINT, data, size, &transferred, TIMEOUT);
 
+}
+
+list* cu_find(void) {
+	
+	list *list = lnew();
+	libusb_device **devs;
+	ssize_t found = libusb_get_device_list(NULL,&devs);
+
+	for(int i = 0; i < found; i++) {
+		struct libusb_device_descriptor desc;
+		libusb_get_device_descriptor(devs[i],&desc);
+
+		if(desc.idVendor == USB4ALL_VENDOR && desc.idProduct == USB4ALL_PRODUCT){
+			ladd(list,devs[i]);
+		}
+	}
+	libusb_free_device_list(devs,1);
+	
+	return list;
+	
 }

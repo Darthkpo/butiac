@@ -11,19 +11,19 @@ struct node {
 } typedef node;
 
 node* nnew(void *val);
-void nfree(node *nptr);
+void nfree(node *nptr, int freevalue);
 
 struct list {
 	
 	node *head;
-	unsigned short size;
+	size_t size;
 	
 } typedef list;
 
 //List init
 list* lnew(void);
 //List free, frees all nodes
-void lfree(list *list);
+void lfree(list *list, int freevaluess);
 //Add val to end of list
 void ladd(list *list, void *val);
 //Delete last item

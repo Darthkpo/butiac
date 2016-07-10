@@ -2,16 +2,16 @@
 
 node* nnew(void *val) {
 
-	node *node = malloc(sizeof(node));
+	node *node = malloc(sizeof *node);
 	node->value = val;
 	node->next = NULL;
 	return node;
 
 }
 
-void nfree(node *node) {
+void nfree(node *node, int freevalue) {
 	
-	if(node->value)
+	if(node->value && freevalue)
 		free(node->value);
 	if(node)
 		free(node); //:D
@@ -20,21 +20,21 @@ void nfree(node *node) {
 
 list* lnew(void) {
 	
-	list *list = malloc(sizeof(list));
+	list *list = malloc(sizeof *list);
 	list->head = NULL;
 	list->size = 0;
 	return list;
 	
 }
 
-void lfree (list *list) {
+void lfree (list *list, int freevalues) {
 	
 	if(!list)
 		return;
 	node *iter = list->head;
 	while(iter != NULL) {
 		list->head = list->head->next;
-		nfree(iter);
+		nfree(iter,freevalues);
 		iter= list->head;
 	}
 	free(list);

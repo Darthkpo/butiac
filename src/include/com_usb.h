@@ -17,20 +17,11 @@
 #define TIMEOUT 250
 #define ERROR -1
 
-struct {
+void dev_print(libusb_device_handle *devh);
+int dev_open(libusb_device_handle *devh);
+int dev_read(libusb_device_handle *devh, unsigned char* data, size_t size);
+int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size);
 
-	libusb_device_handle *dev;
-	int debug;
-
-} typedef usb_device;
-
-usb_device* usb_device_new(libusb_device_handle *dev, int debug);
-void usb_device_free(usb_device *udev);
-void usb_device_print(usb_device *udev);
-int usb_device_open(usb_device *udev);
-unsigned char* usb_device_read(usb_device *udev, size_t size);
-int usb_device_write(usb_device *udev, unsigned char* data, size_t size);
-
-ssize_t cu_find(usb_device*** list);
+//TODO: Find butias connected function
 
 #endif

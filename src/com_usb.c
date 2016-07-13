@@ -21,9 +21,10 @@ int dev_open(libusb_device_handle *devh) {
 		libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE);
 		active = 0;
 	}
-
+	libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE);
+	libusb_claim_interface(devh, USB4ALL_INTERFACE);
 	libusb_set_configuration(devh, USB4ALL_CONFIGURATION);
-	return active;
+	return 0;
 
 }
 
@@ -52,7 +53,9 @@ list* cu_find(void) {
 		libusb_get_device_descriptor(devs[i],&desc);
 
 		if(desc.idVendor == USB4ALL_VENDOR && desc.idProduct == USB4ALL_PRODUCT){
+
 			ladd(list,devs[i]);
+			
 		}
 	}
 	libusb_free_device_list(devs,1);

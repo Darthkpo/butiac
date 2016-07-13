@@ -23,7 +23,7 @@ struct list {
 //List init
 list* lnew(void);
 //List free, frees all nodes
-void lfree(list *list, int freevaluess);
+void lfree(list *list, int freevalues);
 //Add val to end of list
 void ladd(list *list, void *val);
 //Delete last item

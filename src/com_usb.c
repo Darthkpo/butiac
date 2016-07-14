@@ -21,9 +21,8 @@ int dev_open(libusb_device_handle *devh) {
 		libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE);
 		active = 0;
 	}
-	libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE);
-	libusb_claim_interface(devh, USB4ALL_INTERFACE);
-	libusb_set_configuration(devh, USB4ALL_CONFIGURATION);
+	int claim = libusb_claim_interface(devh, USB4ALL_INTERFACE);
+	int set_conf = libusb_set_configuration(devh, USB4ALL_CONFIGURATION);
 	return 0;
 
 }
@@ -40,6 +39,19 @@ int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size) {
 	int transferred = 0;
 	return libusb_bulk_transfer(devh, ADMIN_MODULE_IN_ENDPOINT, data, size, &transferred, TIMEOUT);
 
+}
+
+int dev_write_to(libusb_device_handle *devh, unsigned char* data, size_t size, int handler) {
+    printf("Sending %lu bytes to %d.\n", size + 3, handler);
+    unsigned char *payload = malloc( 3 + size );
+    payload[0] = handler * 8;
+    payload[1] = 3 + size;
+    payload[2] = NULL_BYTE;
+    for(int i = 3; i < size + 3; i++) {
+        payload[i] = data[i - 3];
+    }
+    printf("Write: %d\n", dev_write(devh, payload, 3 + size));
+    return 0;
 }
 
 list* cu_find(void) {

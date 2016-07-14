@@ -42,7 +42,6 @@ int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size) {
 }
 
 int dev_write_to(libusb_device_handle *devh, unsigned char* data, size_t size, int handler) {
-    printf("Sending %lu bytes to %d.\n", size + 3, handler);
     unsigned char *payload = malloc( 3 + size );
     payload[0] = handler * 8;
     payload[1] = 3 + size;
@@ -50,7 +49,7 @@ int dev_write_to(libusb_device_handle *devh, unsigned char* data, size_t size, i
     for(int i = 3; i < size + 3; i++) {
         payload[i] = data[i - 3];
     }
-    printf("Write: %d\n", dev_write(devh, payload, 3 + size));
+    dev_write(devh, payload, 3 + size);
     return 0;
 }
 

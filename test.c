@@ -1,4 +1,7 @@
-#include "com_usb.h"
+#include "board.h"
+#include <time.h>
+
+unsigned char opcode[1] = { 0x01 };
 
 int mod_open(MODULES mod, libusb_device_handle *devh) {
     unsigned char *module_name;
@@ -53,20 +56,6 @@ int mod_open(MODULES mod, libusb_device_handle *devh) {
     return raw[4];
 }
 
-int get_handler_type(int index, libusb_device_handle *devh) {
-    printf("Getting handler type of: %d.\n", index);
-    unsigned char payload[5] = { ADMIN_HANDLER_SEND_COMMAND,
-                                 GET_HANDLER_TYPE_PACKET_SIZE,
-                                 NULL_BYTE,
-                                 GET_HANDLER_TYPE_COMMAND,
-                                 index };
-    printf("Write: %d\n", dev_write(devh, payload, 5));
-    unsigned char raw[GET_HANDLER_RESPONSE_PACKET_SIZE];
-    printf("Read: %d\n", dev_read(devh, raw, GET_HANDLER_RESPONSE_PACKET_SIZE));
-    printf("Handler type returned: %d\n", raw[4]);
-    return raw[4];
-}
-
 int main (int argc, char** argv) {
 
 	libusb_context *context = NULL;
@@ -76,42 +65,24 @@ int main (int argc, char** argv) {
 	list *butias_devices = cu_find();
 	printf("Butias found: %lu\n", butias_devices->size);
 
-	list *bdevh = lnew();
+	list *butias = lnew();
 
 	node *iter = butias_devices->head;
 	for(int i = 0; i < butias_devices->size; i++) {
-		libusb_device_handle *newhandle;
-		printf("Opening %d: %d\n", i, libusb_open(iter->value, &newhandle));
-		ladd(bdevh,newhandle);
-		iter = iter->next;
-	}
-	
-	iter = bdevh->head;
-	for(int i = 0; i < bdevh->size; i++) {
-		dev_open(iter->value);
-        printf("----------\n");
-		dev_print(iter->value);
-        printf("----------\n");
+		board *butia;
+        printf("Opening butia: %d = %d.\n", i, board_open(iter->value, &butia));
+		ladd(butias,butia);
 		iter = iter->next;
 	}
 
-    mod_open(admin,bdevh->head->value);
-    int handler = mod_open(distanc,bdevh->head->value);
-
-    unsigned char opcode[1] = { 0x01 };
-    dev_write_to(bdevh->head->value, opcode, 1, handler);
-    unsigned char raw[6];
-    dev_read(bdevh->head->value, raw, 6);
-    printf("Distance[%d]: {%d}\n", handler, 65536 - (raw[4] + raw[5] * 256));
-    
-    iter = bdevh->head;
-	for(int i = 0; i < bdevh->size; i++) {
-        libusb_close(iter->value);
+    iter = butias->head;
+	for(int i = 0; i < butias->size; i++) {
+		board_close(iter->value);
 		iter = iter->next;
 	}
 
 	lfree(butias_devices, 0);
-    lfree(bdevh, 0);
+    lfree(butias, 0);
 	libusb_exit(context);
 	return 0;
 

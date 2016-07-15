@@ -42,6 +42,7 @@ int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size) {
 
 int dev_write_to(libusb_device_handle *devh, unsigned char* data, size_t size, int handler) {
     unsigned char *payload = malloc( 3 + size );
+    CHECK_MALLOC_RETURNED(payload);
     payload[0] = handler * 8;
     payload[1] = 3 + size;
     payload[2] = NULL_BYTE;
@@ -57,10 +58,11 @@ list* cu_find(void) {
 	list *list = lnew();
 	libusb_device **devs;
 	ssize_t found = libusb_get_device_list(NULL,&devs);
+    CHECK_LIBUSB_RETURNED_PTR((int)found);
 
 	for(int i = 0; i < found; i++) {
 		struct libusb_device_descriptor desc;
-		libusb_get_device_descriptor(devs[i],&desc);
+		CHECK_LIBUSB_RETURNED_PTR(libusb_get_device_descriptor(devs[i],&desc));
 
 		if(desc.idVendor == USB4ALL_VENDOR && desc.idProduct == USB4ALL_PRODUCT){
 

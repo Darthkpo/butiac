@@ -48,14 +48,9 @@ int b_get_handler_type(board *b_ptr, int index) {
                                  NULL_BYTE,
                                  GET_HANDLER_TYPE_COMMAND,
                                  index };
-
-    int ret = dev_write(b_ptr->udev, payload, 5);
-    CHECK_LIBUSB_RETURNED(ret)
-
+    CHECK_LIBUSB_RETURNED(dev_write(b_ptr->udev, payload, 5))
     unsigned char raw[GET_HANDLER_RESPONSE_PACKET_SIZE];
-    ret = dev_read(b_ptr->udev, raw, GET_HANDLER_RESPONSE_PACKET_SIZE);
-    CHECK_LIBUSB_RETURNED(ret)
-
+    CHECK_LIBUSB_RETURNED(dev_read(b_ptr->udev, raw, GET_HANDLER_RESPONSE_PACKET_SIZE))
     return raw[4];
 }
 
@@ -65,5 +60,29 @@ int b_get_user_modules_size(board *b_ptr) {
                                  DEFAULT_PACKET_SIZE,
                                  NULL_BYTE,
                                  GET_USER_MODULES_SIZE_COMMAND };
-    
+    CHECK_LIBUSB_RETURNED(dev_write(b_ptr->udev, payload, 4))
+    unsigned char raw[GET_USER_MODULE_LINE_PACKET_SIZE];
+    CHECK_LIBUSB_RETURNED(dev_read(b_ptr->udev, raw, GET_USER_MODULE_LINE_PACKET_SIZE))
+    return raw[4]; 
+}
+
+int b_get_user_module_line(board *b_ptr, int index, char **buffer) {
+   DEBUG_PASSED_NULL_PTR(b_ptr);
+   unsigned char payload[5] = { ADMIN_HANDLER_SEND_COMMAND,
+                                GET_USER_MODULE_LINE_PACKET_SIZE,
+                                NULL_BYTE,
+                                GET_USER_MODULE_LINE_COMMAND,
+                                index };
+   CHECK_LIBUSB_RETURNED(dev_write(b_ptr->udev, payload, 5))
+   unsigned char raw[GET_LINE_RESPONSE_PACKET_SIZE];
+   CHECK_LIBUSB_RETURNED(dev_read(b_ptr->udev, raw, GET_LINE_RESPONSE_PACKET_SIZE));
+   char *module_line = malloc( GET_LINE_RESPONSE_PACKET_SIZE - 4 );
+   CHECK_MALLOC_RETURNED(module_line);
+   for(int i = 4; i < GET_LINE_RESPONSE_PACKET_SIZE; i++) {
+      
+      module_line[i-4] = (char)raw[i];
+
+   }
+   *buffer = module_line;
+   return 0;
 }

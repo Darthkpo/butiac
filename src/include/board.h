@@ -2,6 +2,7 @@
 #define _BUTIAC_BOARD_H_
 
 #include "com_usb.h"
+#include "module.h"
 
 struct {
 
@@ -18,6 +19,6 @@ void board_close(board *b_ptr);
 //Board functions
 int b_get_handler_type(board *b_ptr, int index);
 int b_get_user_modules_size(board *b_ptr);
-
+int b_get_user_module_line(board *b_ptr, int index, char **buffer);
 
 #endif

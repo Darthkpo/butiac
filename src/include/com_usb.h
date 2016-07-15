@@ -41,11 +41,6 @@
 #define TIMEOUT 250
 #define ERROR -1
 
-enum {
-    admin,
-    distanc
-} typedef MODULES;
-
 void dev_print(libusb_device_handle *devh);
 int dev_open(libusb_device_handle *devh);
 int dev_read(libusb_device_handle *devh, unsigned char* data, size_t size);

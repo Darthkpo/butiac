@@ -1,5 +1,5 @@
 #!/bin/sh
-compiler="gcc -g -D ERROR_LOG -D WARN_LOG"
+compiler="gcc -g -D ERROR_LOG -D WARN_LOG -O3"
 includes="-I src/include"
 libraries="`pkg-config --libs --cflags libusb-1.0`"
 sources="src/*.c test.c"

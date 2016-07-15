@@ -6,9 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
+#include "debug.h"
 
-#define ERROR_H "[Error]: "
-#define WARN_H  "[Warning]: s"
 #define USB4ALL_VENDOR        0x04d8
 #define USB4ALL_PRODUCT       0x000c
 #define USB4ALL_CONFIGURATION 1

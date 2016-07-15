@@ -1,22 +1,5 @@
 #include "board.h"
 
-#define DEBUG_PASSED_NULL_PTR(a) \
-        if(!(a)) { \
-                printf("%scalled %s with null pointer at %d in file %s.\n", ERROR_H, __func__, __LINE__, __FILE__); \
-        }
-
-#define CHECK_LIBUSB_RETURNED(a) \
-        if((a) < 0) { \
-            printf("%slibusb returned error '%d' at %d in file %s.\n", ERROR_H, ret, __LINE__, __FILE__); \
-            return ret; \
-        }
-
-#define CHECK_MALLOC_RETURNED(a) \
-        if(!(a)) { \
-            printf("%smalloc returned null pointer at %d in file %s.\n", ERROR_H, __LINE__, __FILE__); \
-            return 1; \
-        }
-
 int board_new(board **new_b_ptr, libusb_device_handle *udev) {
     DEBUG_PASSED_NULL_PTR(udev)
     board *b_ptr = malloc(sizeof(board));

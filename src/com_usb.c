@@ -17,12 +17,11 @@ void dev_print(libusb_device_handle *devh) {
 int dev_open(libusb_device_handle *devh) {
 
 	int active = libusb_kernel_driver_active(devh, USB4ALL_INTERFACE);
-	if(active == 1) {
-		libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE);
-		active = 0;
-	}
-	int claim = libusb_claim_interface(devh, USB4ALL_INTERFACE);
-	int set_conf = libusb_set_configuration(devh, USB4ALL_CONFIGURATION);
+    CHECK_LIBUSB_RETURNED(active)
+	if(active == 1)
+		CHECK_LIBUSB_RETURNED(libusb_detach_kernel_driver(devh, USB4ALL_INTERFACE));
+	CHECK_LIBUSB_RETURNED(libusb_claim_interface(devh, USB4ALL_INTERFACE));
+	CHECK_LIBUSB_RETURNED(libusb_set_configuration(devh, USB4ALL_CONFIGURATION));
 	return 0;
 
 }

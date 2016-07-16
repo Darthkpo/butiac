@@ -18,11 +18,11 @@ int main (int argc, char** argv) {
 		iter = iter->next;
 	}
 
-    module *greys;
-    mod_new(&greys, butias->head->value, grey, 3);
-    int value = mod_getvalue(greys);
-    DEBUG_PRINT_D("Sensor value at 3: ", value);
-    mod_free(greys);
+    module *dist;
+    mod_new(&dist, butias->head->value, distanc, 6);
+    int value = mod_getvalue(dist);
+    DEBUG_PRINT_D("Sensor value at 6: ", value);
+    mod_free(dist);
 
     iter = butias->head;
 	for(int i = 0; i < butias->size; i++) {

@@ -50,6 +50,7 @@ int board_send(board *b_ptr, int index, unsigned char* data, size_t size) {
         payload[i] = data[i - 3];
     }
     CHECK_LIBUSB_RETURNED(dev_write(b_ptr->udev, payload, 3 + size));
+    free(payload);
     return 0;
 
 }
@@ -61,6 +62,7 @@ int board_read(board *b_ptr, unsigned char* data, size_t size) {
     for(int i = 3; i < size + 3; i++) {
         data[i - 3] = raw[i];
     }
+    free(raw);
     return 0;
 
 }

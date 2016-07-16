@@ -45,7 +45,6 @@ void dev_print(libusb_device_handle *devh);
 int dev_open(libusb_device_handle *devh);
 int dev_read(libusb_device_handle *devh, unsigned char* data, size_t size);
 int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size);
-int dev_write_to(libusb_device_handle *devh, unsigned char* data, size_t size, int handler);
 
 list* cu_find(void);
 

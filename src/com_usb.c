@@ -40,19 +40,6 @@ int dev_write(libusb_device_handle *devh, unsigned char* data, size_t size) {
 
 }
 
-int dev_write_to(libusb_device_handle *devh, unsigned char* data, size_t size, int handler) {
-    unsigned char *payload = malloc( 3 + size );
-    CHECK_MALLOC_RETURNED(payload);
-    payload[0] = handler * 8;
-    payload[1] = 3 + size;
-    payload[2] = NULL_BYTE;
-    for(int i = 3; i < size + 3; i++) {
-        payload[i] = data[i - 3];
-    }
-    dev_write(devh, payload, 3 + size);
-    return 0;
-}
-
 list* cu_find(void) {
 	
 	list *list = lnew();

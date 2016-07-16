@@ -16,11 +16,13 @@ int main (int argc, char** argv) {
         DEBUG_PRINT_D("board_open returned: ", board_open(iter->value, &butia));
 		ladd(butias,butia);
 		iter = iter->next;
-	} 
+	}
 
-    char *mod_name;
-    DEBUG_PRINT_D("get_module_name: ", b_get_user_module_line(butias->head->value, 18, &mod_name));
-    DEBUG_PRINT_S("Module name at 18: ", mod_name);
+    module *greys;
+    mod_new(&greys, butias->head->value, grey, 3);
+    int value = mod_getvalue(greys);
+    DEBUG_PRINT_D("Sensor value at 3: ", value);
+    mod_free(greys);
 
     iter = butias->head;
 	for(int i = 0; i < butias->size; i++) {

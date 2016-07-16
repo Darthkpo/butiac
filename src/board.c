@@ -7,7 +7,6 @@ int board_new(board **new_b_ptr, libusb_device_handle *udev) {
     CHECK_MALLOC_RETURNED(b_ptr)
 
     b_ptr->udev = udev;
-    b_ptr->modules = lnew();
     
     *new_b_ptr = b_ptr;
 
@@ -17,8 +16,7 @@ int board_new(board **new_b_ptr, libusb_device_handle *udev) {
 
 void board_free(board *b_ptr) { 
 
-    DEBUG_PASSED_NULL_PTR(b_ptr)
-    lfree(b_ptr->modules, 1);
+    DEBUG_PASSED_NULL_PTR(b_ptr);
     free(b_ptr);
     
 }
@@ -38,6 +36,32 @@ void board_close(board *b_ptr) {
     DEBUG_PASSED_NULL_PTR(b_ptr)
     libusb_close(b_ptr->udev);
     board_free(b_ptr);
+
+}
+
+int board_send(board *b_ptr, int index, unsigned char* data, size_t size) {
+
+    unsigned char *payload = malloc( 3 + size );
+    CHECK_MALLOC_RETURNED(payload);
+    payload[0] = index * 8;
+    payload[1] = 3 + size;
+    payload[2] = NULL_BYTE;
+    for(int i = 3; i < size + 3; i++) {
+        payload[i] = data[i - 3];
+    }
+    CHECK_LIBUSB_RETURNED(dev_write(b_ptr->udev, payload, 3 + size));
+    return 0;
+
+}
+
+int board_read(board *b_ptr, unsigned char* data, size_t size) {
+
+    unsigned char *raw = malloc( 3 + size );
+    CHECK_LIBUSB_RETURNED(dev_read(b_ptr->udev, raw, 3 + size));
+    for(int i = 3; i < size + 3; i++) {
+        data[i - 3] = raw[i];
+    }
+    return 0;
 
 }
 

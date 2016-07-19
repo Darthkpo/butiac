@@ -12,3 +12,5 @@ while true; do
         * ) echo "Por favor ingrese 's' o 'n'.";;
     esac
 done
+
+sudo udevadm trigger #reload udev rules

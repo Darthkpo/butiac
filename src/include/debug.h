@@ -23,12 +23,14 @@
             }
 
     #define DEBUG_PRINT_D(a, b) printf(KBLU "%s" KRST "%s%d @ line %d in file '%s'.\n", INFO_H, a, (b), __LINE__, __FILE__);
+    #define DEBUG_PRINT_F(a, b) printf(KBLU "%s" KRST "%s%f @ line %d in file '%s'.\n", INFO_H, a, (b), __LINE__, __FILE__);
     #define DEBUG_PRINT_S(a, b) printf(KBLU "%s" KRST "%s%s @ line %d in file '%s'.\n", INFO_H, a, b, __LINE__, __FILE__);
 
 #else
-    
+
     #define DEBUG_PASSED_NULL_PTR(a) a;
     #define DEBUG_PRINT_D(a, b) b;
+    #define DEBUG_PRINT_F(a, b) b;
     #define DEBUG_PRINT_S(a, b) b;
 
 #endif
@@ -69,4 +71,3 @@
 #endif
 
 #endif
-

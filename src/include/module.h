@@ -14,6 +14,7 @@
 enum {
 
     admin   = 0,
+    motors  = 17,
 
     distanc = 1,
     light   = 2,
@@ -22,7 +23,7 @@ enum {
     mod_sen_a = 4,
     mod_sen_b = 5,
     mod_sen_c = 6,
-    
+
     button  = 7,
 
     res     = 8,
@@ -44,12 +45,13 @@ typedef struct module {
     module_type type;
     size_t port;
     char openable;
-  
+
 
 } module;
 
 int mod_new(module **new_m_ptr, struct board *base, module_type type, size_t port);
 void mod_free(module *m_ptr);
+int mod_open(module *m_ptr);
 int mod_turn(module *m_ptr, char on);
 int mod_getvalue(module *m_ptr);
 float mod_getvaluef(module *m_ptr);

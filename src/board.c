@@ -7,18 +7,18 @@ int board_new(board **new_b_ptr, libusb_device_handle *udev) {
     CHECK_MALLOC_RETURNED(b_ptr)
 
     b_ptr->udev = udev;
-    
+
     *new_b_ptr = b_ptr;
 
     return 0;
 
 }
 
-void board_free(board *b_ptr) { 
+void board_free(board *b_ptr) {
 
     DEBUG_PASSED_NULL_PTR(b_ptr);
     free(b_ptr);
-    
+
 }
 
 int board_open(libusb_device *dev, board **b_ptr) {
@@ -32,7 +32,7 @@ int board_open(libusb_device *dev, board **b_ptr) {
 }
 
 void board_close(board *b_ptr) {
-    
+
     DEBUG_PASSED_NULL_PTR(b_ptr)
     libusb_close(b_ptr->udev);
     board_free(b_ptr);
@@ -89,7 +89,7 @@ int b_get_user_modules_size(board *b_ptr) {
     CHECK_LIBUSB_RETURNED(dev_write(b_ptr->udev, payload, 4))
     unsigned char raw[GET_USER_MODULE_LINE_PACKET_SIZE];
     CHECK_LIBUSB_RETURNED(dev_read(b_ptr->udev, raw, GET_USER_MODULE_LINE_PACKET_SIZE))
-    return raw[4]; 
+    return raw[4];
 }
 
 int b_get_user_module_line(board *b_ptr, int index, char **buffer) {
@@ -105,10 +105,34 @@ int b_get_user_module_line(board *b_ptr, int index, char **buffer) {
    char *module_line = malloc( GET_LINE_RESPONSE_PACKET_SIZE - 4 );
    CHECK_MALLOC_RETURNED(module_line);
    for(int i = 4; i < GET_LINE_RESPONSE_PACKET_SIZE; i++) {
-      
+
       module_line[i-4] = (char)raw[i];
 
    }
    *buffer = module_line;
    return 0;
+}
+
+#define TEST_MOTORS 0x03
+#define SET_VEL_2MTR 0x01
+
+int b_test_motors(board *b_ptr) {
+    DEBUG_PASSED_NULL_PTR(b_ptr);
+    unsigned char payload[1] = { TEST_MOTORS };
+    CHECK_LIBUSB_RETURNED(board_send(b_ptr, 8, payload, 1));
+    return 0;
+}
+int b_set_motors_speed(board *b_ptr, char dir1, int speed1, char dir2, int speed2) {
+    DEBUG_PASSED_NULL_PTR(b_ptr);
+    unsigned char payload[7] = {
+        SET_VEL_2MTR,
+        dir1,
+        speed1 / 256,
+        speed1 % 256,
+        dir2,
+        speed2 / 256,
+        speed2 % 256
+    };
+    CHECK_LIBUSB_RETURNED(board_send(b_ptr, 8, payload, 7));
+    return 0;
 }

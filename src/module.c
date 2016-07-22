@@ -11,7 +11,7 @@ int mod_new(module **new_m_ptr, struct board *base, module_type type, size_t por
     new_mod->baseboard = base;
     new_mod->type = type;
     new_mod->port = port;
-    if(type == admin)
+    if(type == admin || type == motors)
         new_mod->openable = 1; //true
     *new_m_ptr = new_mod;
 
@@ -49,14 +49,14 @@ int mod_turn(module *m_ptr, char on) {
 }
 
 float mod_getvaluef(module *m_ptr) {
-    
+
     if(m_ptr->type < 8 || m_ptr->type > 10) {
         return ERROR;
     }
     CHECK_LIBUSB_RETURNED(board_send(m_ptr->baseboard, m_ptr->port, get_value, 1));
-    unsigned char raw[MAX_READ_SIZE];    
+    unsigned char raw[MAX_READ_SIZE];
     CHECK_LIBUSB_RETURNED(board_read(m_ptr->baseboard, raw, 3));
-    
+
     switch(m_ptr->type) {
 
     case res : {
@@ -98,9 +98,9 @@ int mod_getvalue(module *m_ptr) {
     }
 
     }
-      
+
     switch(m_ptr->type) {
-       
+
     case 1 ... 2 : {
         return VCC - (raw[1] + raw[2] * 256);
         break;

@@ -21,5 +21,7 @@ int board_read(board *b_ptr, unsigned char* data, size_t size);
 int b_get_handler_type(board *b_ptr, int index);
 int b_get_user_modules_size(board *b_ptr);
 int b_get_user_module_line(board *b_ptr, int index, char **buffer);
+int b_test_motors(board *b_ptr);
+int b_set_motors_speed(board *b_ptr, char dir1, int speed1, char dir2, int speed2);
 
 #endif
